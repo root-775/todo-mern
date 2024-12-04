@@ -3,6 +3,12 @@ import todoModel from '../models/todoModel.js'
 export const addTodoController = async (req, res) => {
     try {
         const { input } = req.body;
+        if (!input) {
+            return res.status(200).send({
+                status: true,
+                message: 'Todo is required'
+            })
+        }
         const todo = await new todoModel({ input: input, is_complete: false }).save()
         res.status(200).send({
             status: true,

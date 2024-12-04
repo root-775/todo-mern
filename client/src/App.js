@@ -13,7 +13,7 @@ function App() {
 
 	const Toast = Swal.mixin({
 		toast: true,
-		position: "top",
+		position: "top-right",
 		showConfirmButton: false,
 		timer: 3000,
 		timerProgressBar: true,
@@ -37,7 +37,6 @@ function App() {
 			});
 		});
 
-		getAllTodos();
 	}
 
 
@@ -46,49 +45,47 @@ function App() {
 	const getAllTodos = async () => {
 		try {
 			const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/todo/todos`);
-			setTodos(res.data.todos);   // Updates state with fetched todos
+			setTodos(res.data.todos);
 		} catch (error) {
 			console.error("Error fetching todos:", error);
 		}
 	};
-	// Call getAllTodos on component mount
 	useEffect(() => {
 		getAllTodos();
-	}, []); // Empty dependency array ensures this runs only once when the component mounts
+	}, [input]);
 
 	const completeTodo = async (id) => {
-		await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/todo/complete-todo/${id}`, {
-			'input': input
-		}).then(function (response) {
-			getAllTodos();
-			Toast.fire({
-				icon: "success",
-				title: response.data.message
+		await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/todo/complete-todo/${id}`)
+			.then(function (response) {
+				getAllTodos()
+				Toast.fire({
+					icon: "success",
+					title: response.data.message
+				});
+			}).catch(function (error) {
+				Toast.fire({
+					icon: "error",
+					title: "Todo Added failed"
+				});
 			});
-		}).catch(function (error) {
-			Toast.fire({
-				icon: "error",
-				title: "Todo Added failed"
-			});
-		});
 	}
 
 
 	const trashTodo = async (id) => {
-		await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/todo/trash-todo/${id}`, {
-			'input': input
-		}).then(function (response) {
-			getAllTodos();
-			Toast.fire({
-				icon: "success",
-				title: response.data.message
+		await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/todo/trash-todo/${id}`)
+			.then(function (response) {
+				getAllTodos()
+				Toast.fire({
+					icon: "success",
+					title: response.data.message
+				});
+			}).catch(function (error) {
+				Toast.fire({
+					icon: "error",
+					title: "Todo Added failed"
+				});
 			});
-		}).catch(function (error) {
-			Toast.fire({
-				icon: "error",
-				title: "Todo Added failed"
-			});
-		});
+
 	}
 
 
